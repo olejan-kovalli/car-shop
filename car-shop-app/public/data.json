@@ -1,0 +1,28 @@
+{
+  "feature_names": [
+    "Make",
+    "Model",
+    "Color",
+    "Engine CC",
+    "Milage",
+    "Year"
+  ],
+  "data": [
+    [
+        "BMW",
+        "3er",
+        "White",
+	"2998",
+	"5000",
+	"2023"
+    ],
+    [
+	"Mercedes",
+        "GLE",
+        "Silver",
+	"3500",
+	"80000",
+	"2019"
+    ]
+]
+}

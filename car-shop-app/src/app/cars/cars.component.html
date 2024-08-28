@@ -1,0 +1,24 @@
+<div id="main-container">
+    <h1>Car shop</h1>
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        (click)="onAddClick()">
+          Add
+      </button>
+      <div id="table-div">
+        <ag-grid-angular 
+          #table
+          style="width: 100%; height: 100%;"
+          class="ag-theme-alpine"
+          [columnDefs]="columnDefs"      
+          [rowData]="rowData"
+          [gridOptions]="gridOptions"
+          [rowMultiSelectWithClick]="true"
+          (rowDataChanged)="handleRowDataChanged($event)"
+          (rowSelected)="rowSelected($event)"
+          (nodeSelected)="rowSelected($event)"
+          rowSelection="multiple">
+        </ag-grid-angular>
+      </div>
+  </div>

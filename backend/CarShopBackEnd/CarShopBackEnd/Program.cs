@@ -1,6 +1,8 @@
+
+
 var builder = WebApplication.CreateBuilder(args);
 
-var corsAllowAnyOriginPolicy = "Cors-Allow-Any-Origin-Policy";
+var corsAllowAnyOriginPolicy = "Cors-Policy";
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -8,11 +10,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Access-Control-Allow-Origin",
+    options.AddPolicy(corsAllowAnyOriginPolicy,
                            policy =>
                            {
-                               //policy.WithOrigins("http://localhost:4200");
-                               policy.AllowAnyOrigin();
+                               //policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+                               policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                            });
 });
 
@@ -27,44 +29,70 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+List<Car> cars = new List<Car>() {
+    new Car("BMW", "3er", "White", "2998", "5000", "2023"),
+    new Car("Mercedes", "GLE", "Silver", "3500", "60000", "2019"),
+    new Car("Porsche", "Cayenne", "Blue", "4500", "600000", "2009")
+    };
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 2).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
-
-app.MapGet("/cars", () => { 
-
-    List<Car> cars = new List<Car>();
-    cars.Add(new Car("BMW", "3er"));
-    cars.Add(new Car("Mercedes", "GLE"));
-
+app.MapGet("/cars", () => {         
     return cars.ToArray();
 });
 
-app.UseCors("Access-Control-Allow-Origin");
+app.MapGet("/car/{id}", (string id) => {
+    foreach (var car in cars)
+        if (car.Id.ToString() == id)
+            return car;
+    
+    return null;
+});
+
+app.MapPost("/car", (Car car) => {
+    cars.Add(car);
+    Console.WriteLine("added");
+});
+
+
+app.MapPut("/car/{id}", (string id, Car car) => {
+    
+    for (int i = cars.Count - 1; i >= 0; i--)
+        if (cars[i].Id.ToString() == id)
+        {
+            cars[i] = car;
+            Console.WriteLine("changed");
+        }    
+});
+
+
+app.MapDelete("/car/{id}", (string id) => {
+    for(int i=cars.Count-1; i>=0; i--)
+        if (cars[i].Id.ToString() == id)
+            cars.Remove(cars[i]);
+});
+
+
+app.UseCors(corsAllowAnyOriginPolicy);
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+public class Car
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+    public Guid Id { get; set; }
+    public string Make { get; set; }
+    public string Model { get; set; }
+    public string Color { get; set; }
+    public string Volume { get; set; }
+    public string Mileage { get; set; }
+    public string Year { get; set; }
 
-internal record Car(string Make, string Model)
-{
+    public Car(string make, string model, string color, string volume, string mileage, string year)
+    {
+        Id = Guid.NewGuid();
+        Make = make;
+        Model = model;
+        Color = color;
+        Volume = volume;
+        Mileage = mileage;
+        Year = year;
+    }
 }

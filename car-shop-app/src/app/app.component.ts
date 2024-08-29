@@ -16,6 +16,4 @@ import { CustomButtonComponent } from "./custom-button/custom-button.component";
 })
 export class AppComponent {
   title = 'car-shop-app';
-
-  
 }

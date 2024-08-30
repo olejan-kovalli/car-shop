@@ -45,20 +45,15 @@ export class CarsComponent {
 
   refreshTable() {
     this.dataServ.getData().subscribe(data => {
-      if (data) {
         this.defineColumns(data);
         this.fillRows(data);
-      }
     });
   }
 
   defineColumns(data: any) {
-    if (!data)
-      return;
-
     this.columnDefs = [];
 
-    for(const propName of Object.keys(data[0]))
+    for(const propName of Object.keys(new Car()))
       this.columnDefs.push({ field: propName });
 
     this.columnDefs.push({ field: "edit", headerName: "Edit", cellRenderer: CustomButtonComponent, width: 150, cellRendererParams: { label: 'edit' }})
@@ -82,6 +77,6 @@ export class CarsComponent {
         row[this.columnDefs[j].field] = data[i][this.columnDefs[j].field];
 
       this.rowData.push(row);   
-    } 
+    }
   }
 }

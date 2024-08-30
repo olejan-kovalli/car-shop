@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  carshopbackend:
+    image: ${DOCKER_REGISTRY-}carshopbackend
+    build:
+      context: .
+      dockerfile: CarShopBackEnd/Dockerfile
+    ports:
+    - '5093:80'
+    - '5094:443'

@@ -23,12 +23,12 @@ export class CarComponent {
     this.id = this.ar.snapshot.params['id'];
 
     if (this.id === 'new'){
-      this.car.make = 'Lada'
-      this.car.model = 'Granta'
-      this.car.color = 'Green'
-      this.car.volume = '1600'
-      this.car.mileage = '200000'
-      this.car.year = '2000' 
+      this.car.Make = 'Lada'
+      this.car.Model = 'Granta'
+      this.car.Color = 'Green'
+      this.car.Volume = '1600'
+      this.car.Mileage = '200000'
+      this.car.Year = '2000' 
     }
     else
       this.dataServ.getCar(this.id).subscribe(data => {

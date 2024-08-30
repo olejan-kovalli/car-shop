@@ -7,6 +7,9 @@ import { Car } from '../car';
   providedIn: 'root'
 })
 export class DataService {
+
+  private backEndUrl = 'https://localhost:7229'
+  //private backEndUrl = 'https://localhost:5094'
   
   private _carDeleted: Subject<any>;
 
@@ -18,23 +21,23 @@ export class DataService {
   }
 
   getData(): Observable<any> {
-    return this.http.get('https://localhost:7229/cars');
+    return this.http.get(this.backEndUrl + '/cars');
   }
 
   getCar(id: string): Observable<any> {
-    return this.http.get('https://localhost:7229/car/'+ id);
+    return this.http.get(this.backEndUrl + '/car/'+ id);
   } 
 
   postCar(car: Car): Observable<any> {
-    return this.http.post('https://localhost:7229/car', car);
+    return this.http.post(this.backEndUrl + '/car', car);
   } 
 
   putCar(id: string, car: Car): Observable<any> {
-    return this.http.put('https://localhost:7229/car/' + id, car);
+    return this.http.put(this.backEndUrl + '/car/' + id, car);
   } 
 
   deleteCar(id: string): Observable<any> {
-    return this.http.delete('https://localhost:7229/car/'+ id);
+    return this.http.delete(this.backEndUrl + '/car/'+ id);
   }
 
   raiseCarDeletedEvent() {

@@ -1,10 +1,10 @@
 export class Car {
-    id!: string;
-    make!: string;
-    model!: string;
-    color!: string;
-    volume!: string;
-    mileage!: string;
-    year!: string;
+    Id!: string; //TODO: change to GUID
+    Make!: string; 
+    Model!: string; 
+    Color!: string; //TODO: change to color
+    Volume!: string; //TODO: change to number
+    Mileage!: string; //TODO: change to number
+    Year!: string; //TODO: change to number /date
 }
 

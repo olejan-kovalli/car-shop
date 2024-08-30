@@ -3,49 +3,18 @@
     padding: 20px;
     min-width: 600px;
     min-height: 600px;
-    
+    width: 1245px;       
 }
 
-#table-plot-div {    
-    position: absolute;
-    top: 165px;    
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
+#toolbar {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    justify-content: right;
 }
 
 #table-div {
     top: 100px;
-    height: 500px;
-    width: 1205px;
-}
-
-#plot-div {
-    position: absolute;
-    bottom: 0;
+    height: 600px;
     width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-#plot {     
-    border: lightgray 1px solid;
-}
-
-#button-message-div {
-    position: relative;
-    display: flex;    
-}
-
-#message {
-    position: absolute;
-    margin-top: 7px;
-    text-align: center;
-    left: 160px;
-    right: 110px;
-}
-
-#deselect-btn {
-    position: absolute;
-    right: 0;
 }

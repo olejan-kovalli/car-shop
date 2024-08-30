@@ -31,12 +31,12 @@ export class CustomButtonComponent implements ICellRendererAngularComp  {
       this.params = params;
   }
 
-  onClick() {
+  onClick() { //TODO: change to inheritance
     if (this.label === 'edit')
-      this.router.navigate(['car', this.params.data.id]);
+      this.router.navigate(['car', this.params.data.Id]);
     else
-      this.dataServ.deleteCar(this.params.data.id).subscribe(()=>{
-        console.log('deleting', this.params.data.id)
+      this.dataServ.deleteCar(this.params.data.Id).subscribe(()=>{
+        console.log('deleting', this.params.data.Id)
         this.dataServ.raiseCarDeletedEvent();
       });
   }

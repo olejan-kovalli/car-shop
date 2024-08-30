@@ -1,0 +1,16 @@
+#outer-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#inner-container {
+    width: 190px;
+    margin: 100px;
+}
+
+#buttons-container{
+    display: flex;
+    padding: 10px;
+    justify-content:space-around;    
+}

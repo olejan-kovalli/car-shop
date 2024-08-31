@@ -1,20 +1,35 @@
 version: '3.4'
 
 services:
-  carshopbackend:
-    image: ${DOCKER_REGISTRY-}carshopbackend
+  database:
+    image: ${DOCKER_REGISTRY-}carshop-db
+    build:
+      db/
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pass123
+    ports:
+    - 5432:5432
+
+  backend:
+    image: ${DOCKER_REGISTRY-}carshop-back
     build:
       context: ./backend/CarShopBackEnd
       dockerfile: CarShopBackEnd/Dockerfile
     ports:
     - '5093:80'
     - '5094:443'
+    depends_on:
+      - database
 
-  client:
-    image: ${DOCKER_REGISTRY-}angular-docker
+  frontend:
+    image: ${DOCKER_REGISTRY-}carshop-front
+
     build: 
       car-shop-app/
 
     ports:	
     - 4200:4200
-      
+    
+
+

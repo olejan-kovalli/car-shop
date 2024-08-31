@@ -1,0 +1,27 @@
+docker pull postgres
+docker run -d --name cars-db-dc -p 5433:5432 -e POSTGRES_PASSWORD=pass123 postgres
+docker exec -it cars-db-dc bash
+psql -h localhost -U postgres
+CREATE DATABASE car_shop;
+\l
+\c car_shop
+
+CREATE TABLE cars(ID INT PRIMARY KEY NOT NULL, MAKE TEXT NOT NULL, MODEL TEXT NOT NULL, COLOR TEXT NOT NULL, VOLUME INT NOT NULL, MILEAGE INT NOT NULL, YEAR INT NOT NULL);
+
+INSERT INTO cars VALUES (default, 'BMW', 'X5', 'Green', 4500, 50000, 2015);
+INSERT INTO cars VALUES (default, 'Mercedes', 'CLA', 'Silver', 1500, 25000, 2019);
+INSERT INTO cars VALUES (default, 'Toyouta', 'Camry', 'Black', 2500, 35000, 2022);
+
+psql -h localhost -U postgres -c "CREATE DATABASE car_shop1"
+psql -h localhost -U postgres -c "CREATE TABLE cars(ID SERIAL PRIMARY KEY, MAKE TEXT NOT NULL, MODEL TEXT NOT NULL, COLOR TEXT NOT NULL, VOLUME INT NOT NULL, MILEAGE INT NOT NULL, YEAR INT NOT NULL);"
+
+psql -h localhost -U postgres -c 'INSERT INTO cars VALUES (DEFAULT, ''BMW'', ''X5'', ''Green'', 4500, 50000, 2015);'
+
+USER postgres
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=pass123
+RUN postgres
+RUN psql -h localhost -U postgres -c "CREATE DATABASE car_shop;"
+RUN psql -h localhost -U postgres -c "\c car_shop" -c "CREATE TABLE cars(ID SERIAL PRIMARY KEY, MAKE TEXT NOT NULL, MODEL TEXT NOT NULL, COLOR TEXT NOT NULL, VOLUME INT NOT NULL, MILEAGE INT NOT NULL, YEAR INT NOT NULL);"
+RUN psql -h localhost -U postgres -c "\c car_shop" -c "INSERT INTO cars VALUES (default, 'BMW', 'X5', 'Green', 4500, 50000, 2015);"
+RUN psql -h localhost -U postgres -c "\c car_shop" -c "INSERT INTO cars VALUES (default, 'Nissan', 'X-Trail', 'Gray', 2000, 150000, 2005);"

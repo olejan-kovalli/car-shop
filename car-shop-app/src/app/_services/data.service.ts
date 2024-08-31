@@ -3,13 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { Car } from '../car';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  private backEndUrl = 'https://localhost:7229'
-  //private backEndUrl = 'https://localhost:5094'
+  private backEndUrl = environment.backEndUrl;
+  //private backEndUrl = 'https://localhost:7229'
+  //private backEndUrl = 'http://localhost:5094'
   
   private _carDeleted: Subject<any>;
 
@@ -18,6 +21,8 @@ export class DataService {
   constructor(private http: HttpClient) { 
     this._carDeleted = new Subject<any>();
     this.carDeleted$ = this._carDeleted.asObservable();
+
+    console.log(environment.production, environment.backEndUrl);
   }
 
   getData(): Observable<any> {

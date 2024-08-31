@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Net.Sockets;
+using System.Net;
 using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -34,10 +36,26 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-var connString = "Host=localhost;Port=5433;Username=postgres;Password=pass123;Database=car_shop;";
+string GetLocalIPAddress()
+{
+    var host = Dns.GetHostEntry(Dns.GetHostName());
+    foreach (var ip in host.AddressList)
+    {
+        if (ip.AddressFamily == AddressFamily.InterNetwork)
+        {
+            return ip.ToString();
+        }
+    }
+    throw new Exception("No network adapters with an IPv4 address in the system!");
+}
+
+Console.WriteLine("local ip address", GetLocalIPAddress());
+
+var connString = "Host=" + GetLocalIPAddress() + ";Port=5432;Username=postgres;Password=pass123;Database=car_shop;";
 
 await using var conn = new Npgsql.NpgsqlConnection(connString);
 await conn.OpenAsync();
+
 
 List<Car> cars = new List<Car>() {
     new Car("1", "BMW", "3er", "White", "2998", "5000", "2023"),

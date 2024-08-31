@@ -7,9 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CarShopBackEnd", "CarShopBa
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{C14CBB36-D1DB-42CD-B827-309D8345F3EC}"
 EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Database1", "..\Database1\Database1.sqlproj", "{CF33ABD1-103D-4711-90C2-1237348A2919}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "..\ConsoleApp1\ConsoleApp1.csproj", "{DFE461B1-06B9-4FBF-8A7C-1B60F40B8514}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "..\ConsoleApp1\ConsoleApp1.csproj", "{DFE461B1-06B9-4FBF-8A7C-1B60F40B8514}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,15 +23,9 @@ Global
 		{C14CBB36-D1DB-42CD-B827-309D8345F3EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C14CBB36-D1DB-42CD-B827-309D8345F3EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C14CBB36-D1DB-42CD-B827-309D8345F3EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF33ABD1-103D-4711-90C2-1237348A2919}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF33ABD1-103D-4711-90C2-1237348A2919}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{CF33ABD1-103D-4711-90C2-1237348A2919}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF33ABD1-103D-4711-90C2-1237348A2919}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF33ABD1-103D-4711-90C2-1237348A2919}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{DFE461B1-06B9-4FBF-8A7C-1B60F40B8514}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DFE461B1-06B9-4FBF-8A7C-1B60F40B8514}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFE461B1-06B9-4FBF-8A7C-1B60F40B8514}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DFE461B1-06B9-4FBF-8A7C-1B60F40B8514}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

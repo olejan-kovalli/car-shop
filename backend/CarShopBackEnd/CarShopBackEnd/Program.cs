@@ -40,33 +40,40 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-string GetLocalIPAddress()
-{
-    var host = Dns.GetHostEntry(Dns.GetHostName());
-    foreach (var ip in host.AddressList)
-    {
-        if (ip.AddressFamily == AddressFamily.InterNetwork)
-        {
-            return ip.ToString();
-        }
-    }
-    throw new Exception("No network adapters with an IPv4 address in the system!");
-}
-
 string Quote(string s) 
 { 
     return "'" + s + "'"; 
 }
 
+var dbIp = Environment.GetEnvironmentVariable("DB_IP");
+var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+var dbUser = Environment.GetEnvironmentVariable("POSTGRES_USER");
+var dbPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+
 var connString = 
-    "Host=" + GetLocalIPAddress() + ";" + 
-    "Port=5432;" + 
-    "Username=postgres;" +
-    "Password=pass123;" +
-    "Database=car_shop;";
+    "Host=" + dbIp + ";" + 
+    "Port=" + dbPort + ";" + 
+    "Username=" + dbUser + ";" +
+    "Password=" + dbPassword + ";" +
+    "Database=" + dbName + ";";
 
 await using var conn = new Npgsql.NpgsqlConnection(connString);
-await conn.OpenAsync();
+
+for (int i=1; i<=10; i++)
+{
+    try
+    {
+        Console.WriteLine("Trying to connect to database" + dbName + " at " + dbIp + ":" + dbPort + " " + dbUser);
+        await conn.OpenAsync();
+        break;
+    }
+    catch(Exception e)
+    {
+        Console.WriteLine("Error" + e.Message);
+        Thread.Sleep(3000);
+    }
+}
 
 app.MapGet("/cars", async () => {
 

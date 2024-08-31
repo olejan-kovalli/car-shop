@@ -6,11 +6,16 @@
 
 #inner-container {
     width: 190px;
-    margin: 100px;
+    margin: 80px;
 }
 
 #buttons-container{
     display: flex;
     padding: 10px;
     justify-content:space-around;    
+}
+
+label {
+    font-size: small;
+    color: gray;
 }

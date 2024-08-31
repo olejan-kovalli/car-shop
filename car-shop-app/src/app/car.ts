@@ -1,10 +1,39 @@
 export class Car {
-    Id!: string; //TODO: change to GUID
+    
+    Id!: number;
     Make!: string; 
     Model!: string; 
-    Color!: string; //TODO: change to color
-    Volume!: string; //TODO: change to number
-    Mileage!: string; //TODO: change to number
-    Year!: string; //TODO: change to number /date
+    Color!: string;
+    Volume!: number;
+    Mileage!: number;
+    Year!: number;
+
+    static labels: { [id: string] : string; } = {
+        Make: "Марка", 
+        Model: "Модель", 
+        Color: "Цвет", 
+        Volume: "Объем, см3", 
+        Mileage: "Пробег, км", 
+        Year: "Год выпуска", 
+    }
+
+    static createFromValues(obj: any){
+        var car = new Car();
+
+        try {
+            car.Id = obj.Id;
+            car.Make = obj.Make;
+            car.Model = obj.Model; 
+            car.Color = obj.Color;
+            car.Volume = obj.Volume;
+            car.Mileage = obj.Mileage;
+            car.Year = obj.Year;
+            
+            return car;
+        }
+        catch {
+            return undefined;
+        }
+    }
 }
 

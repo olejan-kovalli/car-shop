@@ -1,14 +1,12 @@
 #main-container {
-    position: absolute;
-    padding: 20px;
-    min-width: 600px;
-    min-height: 600px;
-    width: 1245px;       
+    width: 100%;       
+    display: flex;
+    justify-content: center;
 }
 
 #toolbar {
     width: 100%;
-    padding: 10px;
+    padding: 20px;
     display: flex;
     justify-content: right;
 }
@@ -16,5 +14,5 @@
 #table-div {
     top: 100px;
     height: 600px;
-    width: 100%;
+    width: 1220px;    
 }

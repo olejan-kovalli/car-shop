@@ -5,12 +5,13 @@ import { HttpClient } from '@angular/common/http';
 import { AutoWidthCalculator, GridOptions } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular'; // Angular Data Grid Component
 import { ColDef } from 'ag-grid-community'; // Column Definition Type Interface
-import { CustomButtonComponent } from "./custom-button/custom-button.component";
+import { EditButtonComponent } from "./edit-button/edit-button.component";
+import { DeleteButtonComponent } from './delete-button/delete-button.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, AgGridAngular, CustomButtonComponent, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, AgGridAngular, EditButtonComponent, DeleteButtonComponent, RouterLink, RouterLinkActive],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

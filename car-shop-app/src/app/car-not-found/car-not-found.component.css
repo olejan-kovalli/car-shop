@@ -1,0 +1,9 @@
+#outer-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#inner-container {
+    margin: 100px;
+}

@@ -6,6 +6,10 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static Npgsql.Replication.PgOutput.Messages.RelationMessage;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using System.Security.AccessControl;
+using System.Linq.Expressions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,8 +24,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy(corsAllowAnyOriginPolicy,
                            policy =>
                            {
-                               //policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
-                               policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                               policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+                               //policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
                            });
 });
 
@@ -49,77 +53,67 @@ string GetLocalIPAddress()
     throw new Exception("No network adapters with an IPv4 address in the system!");
 }
 
-Console.WriteLine("local ip address", GetLocalIPAddress());
+string Quote(string s) 
+{ 
+    return "'" + s + "'"; 
+}
 
-var connString = "Host=" + GetLocalIPAddress() + ";Port=5432;Username=postgres;Password=pass123;Database=car_shop;";
+var connString = 
+    "Host=" + GetLocalIPAddress() + ";" + 
+    "Port=5432;" + 
+    "Username=postgres;" +
+    "Password=pass123;" +
+    "Database=car_shop;";
 
 await using var conn = new Npgsql.NpgsqlConnection(connString);
 await conn.OpenAsync();
 
-
-List<Car> cars = new List<Car>() {
-    new Car("1", "BMW", "3er", "White", "2998", "5000", "2023"),
-    new Car("2", "Mercedes", "GLE", "Silver", "3500", "60000", "2019"),
-    new Car("3", "Porsche", "Cayenne", "Blue", "4500", "600000", "2009")
-    };
-
 app.MapGet("/cars", async () => {
-    
-    cars = new List<Car>();
+
+    List<Car> cars = new List<Car>();
     
     await using (var cmd = new Npgsql.NpgsqlCommand("SELECT * FROM cars", conn))
     await using (var reader = await cmd.ExecuteReaderAsync())
     {
         while (await reader.ReadAsync())
         {
-            var id = reader.GetInt32(0);
-            var make = reader.GetString(1);
-            var model = reader.GetString(2);
-            var color = reader.GetString(3);
-            var volume = reader.GetInt32(4);
-            var mileage = reader.GetInt32(5);
-            var year = reader.GetInt32(6);
+            object[] values = new object[reader.FieldCount];
+            reader.GetValues(values);
 
-            cars.Add(new Car(id.ToString(), make, model, color, volume.ToString(), mileage.ToString(), year.ToString()));
+            Car car = Car.CreateFromValues(values);
+            if (car != null)
+            {
+                cars.Add(car);
+            }
         }
     }
 
-    return JsonSerializer.Serialize(cars);//.ToArray();
+    return JsonSerializer.Serialize(cars);
 });
 
 app.MapGet("/car/{id}", async (string id) => {
 
-/*
-foreach (var car in cars)
-    if (car.Id.ToString() == id)
-        return car;
-*/
+    if (!Int32.TryParse(id, out int _))
+        return string.Empty;
 
-    await using (var cmd = new Npgsql.NpgsqlCommand("SELECT * FROM cars where ID=" + id, conn))
+    await using (var cmd = new Npgsql.NpgsqlCommand("SELECT * FROM cars WHERE ID=" + id.Trim(), conn))
     await using (var reader = await cmd.ExecuteReaderAsync())
     {
         while (await reader.ReadAsync())
         {
-            var _id = reader.GetInt32(0);
-            var make = reader.GetString(1);
-            var model = reader.GetString(2);
-            var color = reader.GetString(3);
-            var volume = reader.GetInt32(4);
-            var mileage = reader.GetInt32(5);
-            var year = reader.GetInt32(6);
+            object[] values = new object[reader.FieldCount];
+            reader.GetValues(values);
 
-            return JsonSerializer.Serialize(new Car(id.ToString(), make, model, color, volume.ToString(), mileage.ToString(), year.ToString()));
+            Car car = Car.CreateFromValues(values);
+            if (car != null)
+            {
+                return JsonSerializer.Serialize(car);
+            }
         }
     }
-    //return null;
 
-    return "";
+    return string.Empty;
 });
-
-string Quote(string s)
-{
-    return "'" + s + "'";
-}
 
 app.MapPost("/car", async(Car car) => {
 
@@ -132,14 +126,13 @@ app.MapPost("/car", async(Car car) => {
     values += "," + car.Year;
 
     await using (var cmd = new Npgsql.NpgsqlCommand("INSERT INTO cars VALUES(" + values + ")", conn))
+    {
         await cmd.ExecuteNonQueryAsync();
-
-    //cars.Add(car);
+    }
 });
 
-
-app.MapPut("/car/{id}", async (string id, Car car) => {
-
+app.MapPut("/car/{id}", async (string id, Car car) =>
+{
     string set = "make=" + Quote(car.Make);
     set += ", model=" + Quote(car.Model);
     set += ", color=" + Quote(car.Color);
@@ -148,62 +141,34 @@ app.MapPut("/car/{id}", async (string id, Car car) => {
     set += ", year=" + car.Year;
 
     await using (var cmd = new Npgsql.NpgsqlCommand("UPDATE cars SET " + set + " WHERE id=" + id, conn))
+    { 
         await cmd.ExecuteNonQueryAsync();
-
-    /*
-    for (int i = cars.Count - 1; i >= 0; i--)
-        if (cars[i].Id.ToString() == id)
-        {
-            cars[i] = car;
-        }    
-    */
+    }
 });
-
 
 app.MapDelete("/car/{id}", async(string id) => {
     await using (var cmd = new Npgsql.NpgsqlCommand("DELETE FROM cars WHERE id=" + id, conn))
+    {
         await cmd.ExecuteNonQueryAsync();
-    /*
-    for(int i=cars.Count-1; i>=0; i--)
-        if (cars[i].Id.ToString() == id)
-            cars.Remove(cars[i]);
-    */
+    }
 });
 
 
 app.UseCors(corsAllowAnyOriginPolicy);
 
-/*
-await using (var cmd = new Npgsql.NpgsqlCommand("SELECT * FROM cars", conn))
-await using (var reader = await cmd.ExecuteReaderAsync())
-{
-    while (await reader.ReadAsync())
-    {
-        Console.WriteLine(reader.GetInt32(0));
-        Console.WriteLine(reader.GetString(1));
-        Console.WriteLine(reader.GetString(2));
-        Console.WriteLine(reader.GetString(3));
-        Console.WriteLine(reader.GetInt32(4));
-        Console.WriteLine(reader.GetInt32(5));
-        Console.WriteLine(reader.GetInt32(6));
-       
-    }
-}
-*/
 app.Run();
 
 public class Car
 {
-    //TODO: change types
-    public string Id { get; set; }
+    public int Id { get; set; }
     public string Make { get; set; }
     public string Model { get; set; }
     public string Color { get; set; }
-    public string Volume { get; set; }
-    public string Mileage { get; set; }
-    public string Year { get; set; }
+    public int Volume { get; set; }
+    public int Mileage { get; set; }
+    public int Year { get; set; }
 
-    public Car(string id, string make, string model, string color, string volume, string mileage, string year)
+    public Car(int id, string make, string model, string color, int volume, int mileage, int year)
     {
         Id = id;
         Make = make;
@@ -212,5 +177,25 @@ public class Car
         Volume = volume;
         Mileage = mileage;
         Year = year;
+    }
+
+    public static Car CreateFromValues(object[] values)
+    {
+        try
+        {
+            int id = (int)values[0];
+            string make = (string)values[1];
+            string model = (string)values[2];
+            string color = (string)values[3];
+            int volume = (int)values[4];
+            int mileage = (int)values[5];
+            int year = (int)values[6];
+
+            return new Car(id, make, model, color, volume, mileage, year);
+        }
+        catch 
+        {
+            return null;
+        }
     }
 }

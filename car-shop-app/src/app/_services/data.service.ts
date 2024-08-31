@@ -30,7 +30,7 @@ export class DataService {
   }
 
   getCar(id: string): Observable<any> {
-    return this.http.get(this.backEndUrl + '/car/'+ id);
+    return this.http.get(this.backEndUrl + '/car/' + id);
   } 
 
   postCar(car: Car): Observable<any> {

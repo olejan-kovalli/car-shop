@@ -1,23 +1,23 @@
 <div id="outer-container">
     <div id="inner-container">
         <form id="form">
-            <label for="make">Make</label><br>
-            <input type="text" id="make" [(ngModel)]="car.Make" name="make"><br>
+            <label for="make">{{labels['Make']}}</label><br>
+            <input type="text" id="make" [(ngModel)]="car.Make" name="make" ><br>
 
-            <label for="model">Model</label><br>
+            <label for="model">{{labels['Model']}}</label><br>
             <input type="text" id="model" [(ngModel)]="car.Model" name="model"><br>
             
-            <label for="color">Color</label><br>
+            <label for="color">{{labels['Color']}}</label><br>
             <input type="text" id="color" [(ngModel)]="car.Color" name="color"><br>
 
-            <label for="engineVolume">Volume</label><br>
-            <input type="text" id="engineVolume" [(ngModel)]="car.Volume" name="engineVolume"><br>
+            <label for="engineVolume">{{labels['Volume']}}</label><br>
+            <input type="number" id="engineVolume" [(ngModel)]="car.Volume" name="engineVolume"><br>
 
-            <label for="mileage">Mileage</label><br>
-            <input type="text" id="mileage" [(ngModel)]="car.Mileage" name="mileage"><br>
+            <label for="mileage">{{labels['Mileage']}}</label><br>
+            <input type="number" id="mileage" [(ngModel)]="car.Mileage" name="mileage"><br>
 
-            <label for="year">Year</label><br>
-            <input type="text" id="year" [(ngModel)]="car.Year" name="year"><br>    
+            <label for="year">{{labels['Year']}}</label><br>
+            <input type="number" id="year" [(ngModel)]="car.Year" name="year"><br>    
         </form>
         <div id="buttons-container">
             <button class = "btn btn-primary" (click)="onSubmit()">Save</button>

@@ -5,13 +5,15 @@ import { HttpClient } from '@angular/common/http';
 import { AutoWidthCalculator, GridOptions } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular'; // Angular Data Grid Component
 import { ColDef } from 'ag-grid-community'; // Column Definition Type Interface
-import { CustomButtonComponent } from "../custom-button/custom-button.component";
+
+import { EditButtonComponent } from "../edit-button/edit-button.component";
+import { DeleteButtonComponent } from '../delete-button/delete-button.component';
 import { Car } from '../car';
 
 @Component({
   selector: 'app-cars',
   standalone: true,
-  imports: [AgGridAngular, CustomButtonComponent],
+  imports: [AgGridAngular, EditButtonComponent, DeleteButtonComponent],
   templateUrl: './cars.component.html',
   styleUrl: './cars.component.css'
 })
@@ -23,12 +25,7 @@ export class CarsComponent {
   columnDefs: any;
   rowData: any;
 
-  constructor(private http: HttpClient, private dataServ: DataService, private router: Router) {    
-    //this.gridOptions = <GridOptions>{
-    //  onGridReady: (event) => {
-        //event.api.sizeColumnsToFit();
-    //  }
-    // }
+  constructor(private http: HttpClient, private dataServ: DataService, private router: Router) {
   }
 
   onAddClick() {
@@ -44,20 +41,20 @@ export class CarsComponent {
   }
 
   refreshTable() {
+    this.defineColumns();
     this.dataServ.getData().subscribe(data => {
-        this.defineColumns(data);
         this.fillRows(data);
     });
   }
 
-  defineColumns(data: any) {
+  defineColumns() {
     this.columnDefs = [];
 
     for(const propName of Object.keys(new Car()))
-      this.columnDefs.push({ field: propName });
+      this.columnDefs.push({ field: propName, headerName: Car.labels[propName] });
 
-    this.columnDefs.push({ field: "edit", headerName: "Edit", cellRenderer: CustomButtonComponent, width: 150, cellRendererParams: { label: 'edit' }})
-    this.columnDefs.push({ field: "delete", headerName: "Delete", cellRenderer: CustomButtonComponent, width: 150, cellRendererParams: { label: 'delete' }})
+    this.columnDefs.push({ field: "edit", headerName: "Редактировать", cellRenderer: EditButtonComponent, width: 150 })
+    this.columnDefs.push({ field: "delete", headerName: "Удалить", cellRenderer: DeleteButtonComponent, width: 150 })
     
     this.columnDefs[0].hide = true;
 
@@ -70,13 +67,10 @@ export class CarsComponent {
 
   fillRows(data: any) {
     this.rowData = []
-    for (var i = 0; i < data.length; i++) {   
-      var row: any = {};
-      
-      for(var j=0; j<this.columnDefs.length;j++)
-        row[this.columnDefs[j].field] = data[i][this.columnDefs[j].field];
-
-      this.rowData.push(row);   
+    for (var row of data) {
+      var car = Car.createFromValues(row);
+      if (car != undefined)
+        this.rowData.push(car);   
     }
   }
 }

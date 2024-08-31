@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DataService } from '../_services/data.service';
+import { NgIf } from '@angular/common';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-car',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, NgIf],
   templateUrl: './car.component.html',
   styleUrl: './car.component.css'
 })
@@ -16,7 +18,11 @@ import { DataService } from '../_services/data.service';
 export class CarComponent {
 
   id!: string;
-  car: any = new Car();
+  car: Car = new Car();
+
+  labels = Car.labels;
+
+  car_found: boolean = false;
 
   constructor(private router: Router, private ar: ActivatedRoute, private dataServ: DataService) {
     
@@ -26,29 +32,31 @@ export class CarComponent {
       this.car.Make = 'Lada'
       this.car.Model = 'Granta'
       this.car.Color = 'Green'
-      this.car.Volume = '1600'
-      this.car.Mileage = '200000'
-      this.car.Year = '2000' 
+      this.car.Volume = 1600
+      this.car.Mileage = 200000
+      this.car.Year = 2000 
     }
     else
       this.dataServ.getCar(this.id).subscribe(data => {
         if (data) {
           this.car = data;
-        console.log(this.car);        
+        }
+        else {
+          this.router.navigate(['notfound']);
         }
       });
   }
 
   onSubmit() {
-    if (this.id === 'new') {
-      this.dataServ.postCar(this.car).subscribe(()=>{
-        this.router.navigate(['']);
-      });
-    }
-    else {
-      this.dataServ.putCar(this.id, this.car).subscribe(()=>{
-        this.router.navigate(['']);
-      });
-    }
+    var request = new Observable<any>;
+
+    if (this.id === 'new') 
+      request = this.dataServ.postCar(this.car)
+    else 
+      request = this.dataServ.putCar(this.id, this.car);
+
+    request.subscribe(() => {
+      this.router.navigate(['']);
+    })
   }
 }

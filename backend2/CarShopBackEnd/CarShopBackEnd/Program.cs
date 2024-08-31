@@ -37,12 +37,6 @@ var dbName = Environment.GetEnvironmentVariable("DB_NAME");
 var dbUser = Environment.GetEnvironmentVariable("POSTGRES_USER");
 var dbPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
 
-dbIp = "192.168.1.11";
-dbPort = "5432";
-dbName = "car_shop";
-dbUser = "postgres";
-dbPassword = "pass123";
-
 var connString = @"" +
     "Host=" + dbIp + ";" + 
     "Port=" + dbPort + ";" + 

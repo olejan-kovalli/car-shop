@@ -59,4 +59,8 @@ export class CarComponent {
       this.router.navigate(['']);
     })
   }
+
+  onCancel() {
+    this.router.navigate(['']);
+  }
 }

@@ -1,23 +1,23 @@
 <div id="outer-container">
     <div id="inner-container">
         <form id="form">
-            <label for="make">{{labels['Make']}}</label><br>
-            <input type="text" id="make" [(ngModel)]="car.Make" name="make" ><br>
+            <label for="make">{{labels['make']}}</label><br>
+            <input type="text" id="make" [(ngModel)]="car.make" name="make" ><br>
 
-            <label for="model">{{labels['Model']}}</label><br>
-            <input type="text" id="model" [(ngModel)]="car.Model" name="model"><br>
+            <label for="model">{{labels['model']}}</label><br>
+            <input type="text" id="model" [(ngModel)]="car.model" name="model"><br>
             
-            <label for="color">{{labels['Color']}}</label><br>
-            <input type="text" id="color" [(ngModel)]="car.Color" name="color"><br>
+            <label for="color">{{labels['color']}}</label><br>
+            <input type="text" id="color" [(ngModel)]="car.color" name="color"><br>
 
-            <label for="engineVolume">{{labels['Volume']}}</label><br>
-            <input type="number" id="engineVolume" [(ngModel)]="car.Volume" name="engineVolume"><br>
+            <label for="engineVolume">{{labels['volume']}}</label><br>
+            <input type="number" id="engineVolume" [(ngModel)]="car.volume" name="engineVolume"><br>
 
-            <label for="mileage">{{labels['Mileage']}}</label><br>
-            <input type="number" id="mileage" [(ngModel)]="car.Mileage" name="mileage"><br>
+            <label for="mileage">{{labels['mileage']}}</label><br>
+            <input type="number" id="mileage" [(ngModel)]="car.mileage" name="mileage"><br>
 
-            <label for="year">{{labels['Year']}}</label><br>
-            <input type="number" id="year" [(ngModel)]="car.Year" name="year"><br>    
+            <label for="year">{{labels['year']}}</label><br>
+            <input type="number" id="year" [(ngModel)]="car.year" name="year"><br>    
         </form>
         <div id="buttons-container">
             <button class = "btn btn-primary" (click)="onSubmit()">Сохранить</button>

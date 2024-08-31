@@ -25,7 +25,7 @@ export class EditButtonComponent implements ICellRendererAngularComp  {
   }
 
   onClick() {
-    this.router.navigate(['car', this.params.data.Id]);
+    this.router.navigate(['car', this.params.data.id]);
   }
   
   refresh(params: ICellRendererParams) {

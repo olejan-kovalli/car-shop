@@ -1,33 +1,33 @@
 export class Car {
     
-    Id!: number;
-    Make!: string; 
-    Model!: string; 
-    Color!: string;
-    Volume!: number;
-    Mileage!: number;
-    Year!: number;
+    id!: number;
+    make!: string; 
+    model!: string; 
+    color!: string;
+    volume!: number;
+    mileage!: number;
+    year!: number;
 
     static labels: { [id: string] : string; } = {
-        Make: "Марка", 
-        Model: "Модель", 
-        Color: "Цвет", 
-        Volume: "Объем, см3", 
-        Mileage: "Пробег, км", 
-        Year: "Год выпуска", 
+        make: "Марка", 
+        model: "Модель", 
+        color: "Цвет", 
+        volume: "Объем, см3", 
+        mileage: "Пробег, км", 
+        year: "Год выпуска", 
     }
 
     static createFromValues(obj: any){
         var car = new Car();
 
         try {
-            car.Id = obj.Id;
-            car.Make = obj.Make;
-            car.Model = obj.Model; 
-            car.Color = obj.Color;
-            car.Volume = obj.Volume;
-            car.Mileage = obj.Mileage;
-            car.Year = obj.Year;
+            car.id = obj.id;
+            car.make = obj.make;
+            car.model = obj.model; 
+            car.color = obj.color;
+            car.volume = obj.volume;
+            car.mileage = obj.mileage;
+            car.year = obj.year;
             
             return car;
         }

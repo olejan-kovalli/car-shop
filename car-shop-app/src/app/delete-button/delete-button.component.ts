@@ -25,8 +25,8 @@ export class DeleteButtonComponent implements ICellRendererAngularComp  {
   }
 
   onClick() {
-    this.dataServ.deleteCar(this.params.data.Id).subscribe(()=>{
-      console.log('deleting', this.params.data.Id)
+    this.dataServ.deleteCar(this.params.data.id).subscribe(()=>{
+      console.log('deleting', this.params.data.id)
       this.dataServ.raiseCarDeletedEvent();
     });
   }

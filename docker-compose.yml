@@ -11,7 +11,7 @@ services:
   backend:
     image: ${DOCKER_REGISTRY-}carshop-back
     build:
-      context: ./backend/CarShopBackEnd
+      context: ./backend2/CarShopBackEnd
       dockerfile: CarShopBackEnd/Dockerfile
     env_file: 
       - car-shop.env

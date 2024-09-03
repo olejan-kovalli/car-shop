@@ -31,84 +31,100 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-var dbIp = Environment.GetEnvironmentVariable("DB_IP");
-var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
-var dbName = Environment.GetEnvironmentVariable("DB_NAME");
-var dbUser = Environment.GetEnvironmentVariable("POSTGRES_USER");
-var dbPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+var env_file_name = AppContext.BaseDirectory + @"..\..\..\..\..\..\car-shop.env";
 
-var connString = @"" +
-    "Host=" + dbIp + ";" + 
-    "Port=" + dbPort + ";" + 
-    "Username=" + dbUser + ";" +
-    "Password=" + dbPassword + ";" +
-    "Database=" + dbName + ";";
-
-var ctx = new CarsContext(connString);
-
-app.MapGet("/cars", async () => {
-
-    var cars = await ctx.cars.ToListAsync();
-
-    return JsonSerializer.Serialize(cars);
-});
-
-app.MapGet("/car/{id}", async (string id) => {
-
-    if (!Int32.TryParse(id, out _))
-        return string.Empty;
-
-    var cars = await ctx.cars.Where(c => c.id == Int32.Parse(id)).ToListAsync();
-
-    if (cars.Count > 0)
-        return JsonSerializer.Serialize(cars[0]);
-    else
-        return string.Empty;
-});
-
-app.MapPost("/car", async(Car car) => {
-
-    if (car != null)
+if (File.Exists(env_file_name))
+    foreach (string line in File.ReadAllLines(env_file_name))
     {
-        await ctx.cars.AddAsync(car);
-        await ctx.SaveChangesAsync();
+        var parts = line.Split('=');
+        if (parts.Length == 2)
+        {
+            var key = parts[0];
+            var value = parts[1];
+            if (key.Length > 0 && value.Length > 0)
+                Environment.SetEnvironmentVariable(key, value);
+        }
+        Environment.SetEnvironmentVariable("DB_IP", "localhost");
     }
-});
 
-app.MapPut("/car/{id}", async (string id, Car car) =>
-{
-    await ctx.cars
-        .Where(c => c.id == Int32.Parse(id))
-        .ExecuteUpdateAsync(setters => setters
-        .SetProperty(c => c.make, car.make)
-        .SetProperty(c => c.model, car.model)
-        .SetProperty(c => c.color, car.color)
-        .SetProperty(c => c.volume, car.volume)
-        .SetProperty(c => c.mileage, car.mileage)
-        .SetProperty(c => c.year, car.year)
-        );
+var dbIp = Environment.GetEnvironmentVariable("DB_IP");
+        var dbPort = Environment.GetEnvironmentVariable("DB_PORT");
+        var dbName = Environment.GetEnvironmentVariable("DB_NAME");
+        var dbUser = Environment.GetEnvironmentVariable("POSTGRES_USER");
+        var dbPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
 
-    await ctx.SaveChangesAsync(true);
+        var connString = @"" +
+            "Host=" + dbIp + ";" +
+            "Port=" + dbPort + ";" +
+            "Username=" + dbUser + ";" +
+            "Password=" + dbPassword + ";" +
+            "Database=" + dbName + ";";
 
-    //
-    ctx = new CarsContext(connString);
-    //without this does not update records, only after back end is restarted
+        var ctx = new CarsContext(connString);
 
-});
+        app.MapGet("/cars", async () => {
+
+            var cars = await ctx.cars.ToListAsync();
+
+            return JsonSerializer.Serialize(cars);
+        });
+
+        app.MapGet("/car/{id}", async (string id) => {
+
+            if (!Int32.TryParse(id, out _))
+                return string.Empty;
+
+            var cars = await ctx.cars.Where(c => c.id == Int32.Parse(id)).ToListAsync();
+
+            if (cars.Count > 0)
+                return JsonSerializer.Serialize(cars[0]);
+            else
+                return string.Empty;
+        });
+
+        app.MapPost("/car", async (Car car) => {
+
+            if (car != null)
+            {
+                await ctx.cars.AddAsync(car);
+                await ctx.SaveChangesAsync();
+            }
+        });
+
+        app.MapPut("/car/{id}", async (string id, Car car) =>
+        {
+            await ctx.cars
+                .Where(c => c.id == Int32.Parse(id))
+                .ExecuteUpdateAsync(setters => setters
+                .SetProperty(c => c.make, car.make)
+                .SetProperty(c => c.model, car.model)
+                .SetProperty(c => c.color, car.color)
+                .SetProperty(c => c.volume, car.volume)
+                .SetProperty(c => c.mileage, car.mileage)
+                .SetProperty(c => c.year, car.year)
+                );
+
+            await ctx.SaveChangesAsync(true);
+
+            //
+            ctx = new CarsContext(connString);
+            //without this does not update records, only after back end is restarted
+
+        });
 
 
-app.MapDelete("/car/{id}", async(string id) => {
+        app.MapDelete("/car/{id}", async (string id) => {
 
-    if (!Int32.TryParse(id, out _))
-        return;
+            if (!Int32.TryParse(id, out _))
+                return;
 
-    await ctx.cars.Where(c => c.id == Int32.Parse(id)).ExecuteDeleteAsync();
-    await ctx.SaveChangesAsync();
-});
+            await ctx.cars.Where(c => c.id == Int32.Parse(id)).ExecuteDeleteAsync();
+            await ctx.SaveChangesAsync();
+        });
 
-app.UseCors(corsAllowAnyOriginPolicy);
+        app.UseCors(corsAllowAnyOriginPolicy);
 
-app.Run();
+        app.Run();
 public class CarsContext : DbContext
 {
     public DbSet<Car> cars { get; set; }

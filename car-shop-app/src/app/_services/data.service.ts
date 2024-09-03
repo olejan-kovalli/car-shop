@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, Observer } from 'rxjs';
 import { Car } from '../car';
 
 import { environment } from '../../environments/environment';
@@ -41,11 +41,23 @@ export class DataService {
     return this.http.put(this.backEndUrl + '/car/' + id, car);
   } 
 
-  deleteCar(id: string): Observable<any> {
-    return this.http.delete(this.backEndUrl + '/car/'+ id);
+
+  deleteCar(id: number): Observable<any> {    
+    return this.http.delete(this.backEndUrl + '/car/'+ id)
   }
 
-  raiseCarDeletedEvent() {
-    this._carDeleted.next("");
-  } 
+  deleteCar1(id: number): Observable<any> {
+    return new Observable(
+      (observer: any) => {
+        return this.http.delete(this.backEndUrl + '/car/'+ id.toString()).subscribe(() => {
+          this.raiseCarDeletedEvent();
+        }
+      )
+    }      
+  )
+}
+
+  private raiseCarDeletedEvent() {
+    this._carDeleted.next(undefined);
+  }
 }

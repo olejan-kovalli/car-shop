@@ -1,25 +1,24 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Route, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { DataService } from '../_services/data.service';
 import { HttpClient } from '@angular/common/http';
-import { AutoWidthCalculator, GridOptions } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular'; // Angular Data Grid Component
-import { ColDef } from 'ag-grid-community'; // Column Definition Type Interface
-
-import { EditButtonComponent } from "../edit-button/edit-button.component";
-import { DeleteButtonComponent } from '../delete-button/delete-button.component';
+import { CustomButtonComponent } from '../custom-button/custom-button.component';
 import { Car } from '../car';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cars',
   standalone: true,
-  imports: [AgGridAngular, EditButtonComponent, DeleteButtonComponent],
+  imports: [AgGridAngular, CustomButtonComponent],
   templateUrl: './cars.component.html',
   styleUrl: './cars.component.css'
 })
-export class CarsComponent {
+export class CarsComponent implements OnInit, OnDestroy {
   
   @ViewChild('table') table: any;
+
+  deleteSubscription: Subscription = new Subscription(undefined);
 
   gridOptions: any;
   columnDefs: any;
@@ -32,12 +31,9 @@ export class CarsComponent {
     this.router.navigate(['car/new']);
   }
 
+
   ngOnInit(): void {
     this.refreshTable();
-    
-    this.dataServ.carDeleted$.subscribe(() => {      
-      this.refreshTable();
-    });
   }
 
   refreshTable() {
@@ -52,9 +48,21 @@ export class CarsComponent {
 
     for(const propName of Object.keys(new Car()))
       this.columnDefs.push({ field: propName, headerName: Car.labels[propName] });
-
-    this.columnDefs.push({ field: "edit", headerName: "Редактировать", cellRenderer: EditButtonComponent, width: 150 })
-    this.columnDefs.push({ field: "delete", headerName: "Удалить", cellRenderer: DeleteButtonComponent, width: 150 })
+    
+    this.columnDefs.push({ 
+      field: "edit", 
+      headerName: "Редактировать", 
+      cellRenderer: CustomButtonComponent, 
+      cellRendererParams: {onClick: this.onEditClick.bind(this), icon: "bi bi-pencil"}, 
+      width: 150 })
+    
+    this.columnDefs.push({ 
+      field: "delete", 
+      headerName: "Удалить", 
+      cellRenderer: CustomButtonComponent, 
+      cellRendererParams: {onClick: this.onDeleteClick.bind(this), icon: "bi bi-trash"}, 
+      width: 150
+    })
     
     this.columnDefs[0].hide = true;
 
@@ -65,6 +73,16 @@ export class CarsComponent {
     });
   }
 
+  onEditClick(id: number) {
+    this.router.navigate(['car', id]);
+  }
+
+  onDeleteClick(id: number) {
+    this.dataServ.deleteCar(id).subscribe(() => {
+      this.refreshTable();
+    });
+  }
+
   fillRows(data: any) {
     this.rowData = []
     for (var row of data) {
@@ -72,5 +90,8 @@ export class CarsComponent {
       if (car != undefined)
         this.rowData.push(car);   
     }
+  }
+
+  ngOnDestroy(): void {
   }
 }
